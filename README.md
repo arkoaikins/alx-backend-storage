@@ -16,3 +16,12 @@
 | Login to root user |                          |
 | exit MongoDB       |                          |
 | Stop MongoDb       |                          |
+
+
+# For Redis
+|  operation         |         command                 |
+|--------------------|---------------------------------|
+| Start Redis        | sudo service redis-server start |
+| Login to root user |                                 |
+| exit Redis         |                                 |
+| Stop Redic         |                                 |
