@@ -18,6 +18,21 @@ def count_calls(method: Callable) -> Callable:
     return inc_count
 
 
+def call_history(method: Callable) -> Callable:
+    """Stores history of inputs and outputs for a particular func"""
+    @wraps(method)
+    def store_hist(self, *args, **kwargs):
+        input_key = f"{method.__qualname__}:inputs"
+        output_key = f"{method.__qualname__}:outputs"
+
+        self._redis.rpush(input_key, str(args))
+        output = method(self, *args, **kwargs)
+        self._redis.rpush(output_key, str(output))
+
+        return output
+    return store_hist
+
+
 class Cache:
     """stores an instance of the Redis client"""
     def __init__(self):
@@ -25,6 +40,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """stores input data in redis using random key"""
